@@ -30,11 +30,11 @@ enum relativelocation
     rightside,
     center
 };
-int VectorNumberCorrectionFunction(int currentColumn, int currentRow);
-int EdgeBombNumberCorrectionFunction(relativelocation whichside, int currentColumn, int currentRow);
-int BarBombsNumberCorrectionFunction(relativelocation whichside, int curentColumn, int currentRow);
-int CenterBombNumberCorrectionFunction(int currentColumn, int currentRow);
-int EmptySpaceRevealFunction(int currentColumn, int currentRow);
+int VectorNumberCorrectionFunction(int currentRow, int currentColumn);
+int EdgeBombNumberCorrectionFunction(relativelocation whichside, int currentRow, int currentColumn);
+int BarBombsNumberCorrectionFunction(relativelocation whichside, int currentRow, int currentColumn);
+int CenterBombNumberCorrectionFunction(int currentRow, int currentColumn);
+int EmptySpaceRevealFunction(int currentRow, int currentColumn);
 void LeftSideCheck(int currentPosition);
 void RightSideCheck(int currentPosition);
 void DownSideCheck(int currentPosition);
@@ -43,12 +43,12 @@ void EmptySpaceVectorUpdate(int currentPosition);
 void CheckForAHighScore(int score, string fullname, time_t startingTime, time_t finishingTime);
 int ShowHallOfFame();
 void ShowAboutTheCreator();
-long numberOfRows;
 long numberOfColumns;
+long numberOfRows;
 int difficulty;
 int numberOfAnticipatedBombs;
-int selectedRow;
 int selectedColumn;
+int selectedRow;
 vector<char> primaryTableVector;
 vector<char> userTableVector;
 bool gameOver = false;
@@ -100,22 +100,22 @@ int main()
 #pragma region GameStartingPage
 
     cout << "\t\t\t\t\t\t    MineSweeper\n\n";
-    cout << "\t\t\t\t\tEnter The Number Of Rows and Collumn\n";
+    cout << "\t\t\t\t\tEnter The Number Of Columns and Rows\n";
     do
     {
-        cout << "Number Of Rows : ";
+        cout << "Number Of Columns : ";
+        cin >> numberOfColumns;
+
+    } while (numberOfColumns<5 || numberOfColumns>19);
+    // Gets The correct Number of Columns and Then Columns as well as Bombs
+    do
+    {
+        cout << "Number Of Row : ";
         cin >> numberOfRows;
 
     } while (numberOfRows<5 || numberOfRows>19);
-    // Gets The correct Number of Rows and Then Columns as well as Bombs
-    do
-    {
-        cout << "Number Of Column : ";
-        cin >> numberOfColumns;
 
-    } while (numberOfColumns<5);
-
-    long gameAria = numberOfColumns * numberOfRows;
+    long gameAria = numberOfRows * numberOfColumns;
 
     // Exeption Handling For difficulty
     GettingNumberOfBombs:
@@ -154,7 +154,6 @@ int main()
     int numberOfActualBombs = 0;
     vector<int> bombLocationHolder;
 
-    // I think this region is also fine! - WORKS!
 #pragma region PrimaryVectorGenerationRegion
 
     //feeds the random number generator a key for it to generate new numbers
@@ -192,24 +191,7 @@ int main()
             numberOfActualBombs++;
         }
     }
-    //I want to fill the primaryTableVector with number
-    for (int b = 0; b < bombLocationHolder.size(); b++)
-    {
-        const int x = numberOfRows;
-        const int y = numberOfColumns;
-        switch (bombLocationHolder.at(b))
-        {
-        case 0:
 
-            break;
-        default:
-            break;
-        }
-        if (bombLocationHolder.at(b) == 0)
-        {
-
-        }
-    }
 
 
 
@@ -223,12 +205,12 @@ int main()
 
     //Draws The primaryTableVector for testing purposes
     //cout << "\n" << "Before any operations";
-    //for (int j = 0; j < numberOfColumns; j++)
+    //for (int j = 0; j < numberOfRows; j++)
     //{
     //    cout << "\n\n";
-    //    for (int p = 0; p < numberOfRows; p++)
+    //    for (int p = 0; p < numberOfColumns; p++)
     //    {
-    //        cout << "|  " << primaryTableVector.at(j * numberOfRows + p) << "  ";
+    //        cout << "|  " << primaryTableVector.at(j * numberOfColumns + p) << "  ";
     //    }
     //    cout << "|";
     //}
@@ -241,17 +223,17 @@ int main()
         {
             EdgeBombNumberCorrectionFunction(topleft, 0, 0);
         }
-        if (primaryTableVector.at(numberOfRows - 1) == 'b')
+        if (primaryTableVector.at(numberOfColumns - 1) == 'b')
         {
-            EdgeBombNumberCorrectionFunction(topright, 0, numberOfRows - 1);
+            EdgeBombNumberCorrectionFunction(topright, 0, numberOfColumns - 1);
         }
-        if (primaryTableVector.at((numberOfRows * (numberOfColumns - 1))) == 'b')
+        if (primaryTableVector.at((numberOfColumns * (numberOfRows - 1))) == 'b')
         {
-            EdgeBombNumberCorrectionFunction(downleft, numberOfColumns - 1, 0);
+            EdgeBombNumberCorrectionFunction(downleft, numberOfRows - 1, 0);
         }
-        if (primaryTableVector.at((numberOfColumns * numberOfRows) - 1) == 'b')
+        if (primaryTableVector.at((numberOfRows * numberOfColumns) - 1) == 'b')
         {
-            EdgeBombNumberCorrectionFunction(downright, numberOfColumns - 1, numberOfRows - 1);
+            EdgeBombNumberCorrectionFunction(downright, numberOfRows - 1, numberOfColumns - 1);
         }
 
     }
@@ -262,26 +244,26 @@ int main()
     //Fixing The numbers for Bar area Bombs
     try
     {
-        for (int i = 1; i < numberOfRows - 1; i++)
+        for (int i = 1; i < numberOfColumns - 1; i++)
         {
             if (primaryTableVector.at(i) == 'b')
             {
                 BarBombsNumberCorrectionFunction(top, 0, i);
             }
-            if (primaryTableVector.at(((numberOfColumns - 1) * numberOfRows) + i) == 'b')
+            if (primaryTableVector.at(((numberOfRows - 1) * numberOfColumns) + i) == 'b')
             {
-                BarBombsNumberCorrectionFunction(bottom, numberOfColumns - 1, i);
+                BarBombsNumberCorrectionFunction(bottom, numberOfRows - 1, i);
             }
         }
-        for (int i = 1; i < numberOfColumns - 1; i++)
+        for (int i = 1; i < numberOfRows - 1; i++)
         {
-            if (primaryTableVector.at(i * numberOfRows) == 'b')
+            if (primaryTableVector.at(i * numberOfColumns) == 'b')
             {
                 BarBombsNumberCorrectionFunction(leftside, i, 0);
             }
-            if (primaryTableVector.at(((i + 1) * numberOfRows) - 1) == 'b')
+            if (primaryTableVector.at(((i + 1) * numberOfColumns) - 1) == 'b')
             {
-                BarBombsNumberCorrectionFunction(rightside, i, numberOfRows - 1);
+                BarBombsNumberCorrectionFunction(rightside, i, numberOfColumns - 1);
             }
         }
 
@@ -293,11 +275,11 @@ int main()
     //Fixing The Numbers for Center Bombs
     try
     {
-        for (int i = 1; i < numberOfColumns - 1; i++)
+        for (int i = 1; i < numberOfRows - 1; i++)
         {
-            for (int t = 1; t < numberOfRows - 1; t++)
+            for (int t = 1; t < numberOfColumns - 1; t++)
             {
-                if (primaryTableVector.at((i * numberOfRows) + t) == 'b')
+                if (primaryTableVector.at((i * numberOfColumns) + t) == 'b')
                 {
                     CenterBombNumberCorrectionFunction(i, t);
                 }
@@ -328,23 +310,24 @@ int main()
     {
         system("cls");
         //Draws the primary vector for Testing purposes or if you want to win all the time
-        //for (int j = 0; j < numberOfColumns; j++)
-        //{
-        //    cout << "\n\n";
-        //    for (int p = 0; p < numberOfRows; p++)
-        //    {
-        //        cout << "|  " << primaryTableVector.at(j * numberOfRows + p) << "  ";
-        //    }
-        //    cout << "|";
-        //}
-        //cout << "\n" << "The End of primary Vector" << "\n" << "The Begining of user Vector";
-        //Draws the user vector for a secound time
-        for (int j = 0; j < numberOfColumns; j++)
+        for (int j = 0; j < numberOfRows; j++)
         {
             cout << "\n\n";
-            for (int p = 0; p < numberOfRows; p++)
+            for (int p = 0; p < numberOfColumns; p++)
             {
-                cout << "|  " << userTableVector.at(j * numberOfRows + p) << "  ";
+                cout << "|  " << primaryTableVector.at(j * numberOfColumns + p) << "  ";
+            }
+            cout << "|";
+        }
+        cout << "\n" << "The End of primary Vector" << "\n" << "The Begining of user Vector";
+        
+        //Draws the user vector for a secound time
+        for (int j = 0; j < numberOfRows; j++)
+        {
+            cout << "\n\n";
+            for (int p = 0; p < numberOfColumns; p++)
+            {
+                cout << "|  " << userTableVector.at(j * numberOfColumns + p) << "  ";
             }
             cout << "|";
         }
@@ -354,16 +337,16 @@ int main()
             //This part gets the selected row and column and action from the user
             do
             {
-                cout << "\n" << "Which Row ? ";
-                cin >> selectedRow;
-
-            } while (selectedRow<1 || selectedRow>numberOfRows);
-            do
-            {
                 cout << "\n" << "Which Column ? ";
                 cin >> selectedColumn;
 
             } while (selectedColumn<1 || selectedColumn>numberOfColumns);
+            do
+            {
+                cout << "\n" << "Which Row ? ";
+                cin >> selectedRow;
+
+            } while (selectedRow<1 || selectedRow>numberOfRows);
             do
             {
                 cout << "\n" << "Which Action Reveal or Flag (r OR f OR E for Exit) ? ";
@@ -372,20 +355,20 @@ int main()
             } while (charCurrentAction != 'f' && charCurrentAction != 'r' && charCurrentAction!='E');
             //when the user flags or reveals a flag
             if (charCurrentAction == 'r' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == 'b' &&
-                userTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == 'F')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'b' &&
+                userTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'F')
             {
                 continue;
             }
             else if (charCurrentAction == 'f' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == 'b' &&
-                userTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == 'F')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'b' &&
+                userTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'F')
             {
                 continue;
             }
             //When the user REVEALs a Bomb
             else if (charCurrentAction == 'r' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == 'b')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'b')
             {
                 gameOver = true;
                 system("cls");
@@ -393,28 +376,28 @@ int main()
             }
             //When the user FLAGs a Bomb
             else if (charCurrentAction == 'f' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == 'b')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'b')
             {
-                userTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) = 'F';
+                userTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) = 'F';
                 Score += 1000*difficulty;
             }
             //Whan the user REVEALs a Number
             else if (charCurrentAction == 'r' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) != 'b' &&
-                primaryTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) != ' ')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) != 'b' &&
+                primaryTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) != ' ')
             {
-                userTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) =
-                    primaryTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1));
+                userTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) =
+                    primaryTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1));
             }
             //When the user REVEALs an Empty Space
             else if (charCurrentAction == 'r' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == ' ')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == ' ')
             {
-                EmptySpaceRevealFunction(selectedColumn - 1, selectedRow - 1);
+                EmptySpaceRevealFunction(selectedRow - 1, selectedColumn - 1);
             }
             //When the user FLAGs an Empty Space
             else if (charCurrentAction == 'f' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) == ' ')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == ' ')
             {
                 Score -= 100*difficulty;
                 cout << "\n\n\n\n\n\t\t\t\t\tYou've Flaged The Wrong Position";
@@ -422,8 +405,8 @@ int main()
             }
             //When the user FLAGs a Number
             else if (charCurrentAction == 'f' && primaryTableVector
-                .at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) != 'b' &&
-                primaryTableVector.at(((selectedColumn - 1) * numberOfRows) + (selectedRow - 1)) != ' ')
+                .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) != 'b' &&
+                primaryTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) != ' ')
             {
                 Score -= 75 * difficulty;
                 cout << "\n\n\n\n\n\t\t\t\t\tYou've Flaged The Wrong Position";
@@ -494,7 +477,7 @@ int main()
 
 //Also need to add number of rows and test it again
 //The Function That recieves coordinance of bombs on the edge of the vector
-int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentColumn,int currentRow) {
+int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentRow,int currentColumn) {
 
     if (whichSide==topleft)
     {
@@ -506,25 +489,25 @@ int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentColum
     }
     else if (whichSide==topright)
     {
-        VectorNumberCorrectionFunction(0, currentRow - 1);
-        VectorNumberCorrectionFunction(1, currentRow);
-        VectorNumberCorrectionFunction(1, currentRow - 1);
+        VectorNumberCorrectionFunction(0, currentColumn - 1);
+        VectorNumberCorrectionFunction(1, currentColumn);
+        VectorNumberCorrectionFunction(1, currentColumn - 1);
         return 0;
         //Success
     }
     else if (whichSide==downleft)
     {
-        VectorNumberCorrectionFunction(currentColumn, 1);
-        VectorNumberCorrectionFunction(currentColumn - 1, 0);
-        VectorNumberCorrectionFunction(currentColumn - 1, 1);
+        VectorNumberCorrectionFunction(currentRow, 1);
+        VectorNumberCorrectionFunction(currentRow - 1, 0);
+        VectorNumberCorrectionFunction(currentRow - 1, 1);
         return 0;
         //Success
     }
     else if (whichSide==downright)
     {
-        VectorNumberCorrectionFunction(currentColumn, currentRow - 1);
-        VectorNumberCorrectionFunction(currentColumn - 1, currentRow);
-        VectorNumberCorrectionFunction(currentColumn - 1, currentRow - 1);
+        VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn - 1);
         return 0;
         //Success
     }
@@ -537,44 +520,44 @@ int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentColum
 }
 
 //The Function That recieves coordinance of bombs on the Bar Areas of the vector
-int BarBombsNumberCorrectionFunction(relativelocation whichside, int curentColumn, int currentRow) {
+int BarBombsNumberCorrectionFunction(relativelocation whichside, int currentRow, int currentColumn) {
     if (whichside==top)
     {
-        VectorNumberCorrectionFunction(curentColumn, currentRow + 1);
-        VectorNumberCorrectionFunction(curentColumn, currentRow - 1);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow + 1);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow - 1);
+        VectorNumberCorrectionFunction(currentRow, currentColumn + 1);
+        VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn + 1);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn - 1);
         return 0;
         //Success
     }
     else if (whichside==bottom)
     {
-        VectorNumberCorrectionFunction(curentColumn, currentRow + 1);
-        VectorNumberCorrectionFunction(curentColumn, currentRow - 1);
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow);
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow + 1);
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow - 1);
+        VectorNumberCorrectionFunction(currentRow, currentColumn + 1);
+        VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn + 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn - 1);
         return 0;
         //Success
     }
     else if (whichside==leftside)
     {
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow);
-        VectorNumberCorrectionFunction(curentColumn, currentRow + 1);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow + 1);
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow + 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow, currentColumn + 1);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn + 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn + 1);
         return 0;
         //Success
     }
     else if (whichside==rightside)
     {
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow);
-        VectorNumberCorrectionFunction(curentColumn, currentRow - 1);
-        VectorNumberCorrectionFunction(curentColumn + 1, currentRow - 1);
-        VectorNumberCorrectionFunction(curentColumn - 1, currentRow - 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn);
+        VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
+        VectorNumberCorrectionFunction(currentRow + 1, currentColumn - 1);
+        VectorNumberCorrectionFunction(currentRow - 1, currentColumn - 1);
         return 0;
         //Success
     }
@@ -587,22 +570,22 @@ int BarBombsNumberCorrectionFunction(relativelocation whichside, int curentColum
 }
 
 //This Function Assigns The Correct Numbers to Central Bombs
-int CenterBombNumberCorrectionFunction(int currentColumn, int currentRow) {
-    VectorNumberCorrectionFunction(currentColumn, currentRow + 1);
-    VectorNumberCorrectionFunction(currentColumn, currentRow - 1);
-    VectorNumberCorrectionFunction(currentColumn - 1, currentRow);
-    VectorNumberCorrectionFunction(currentColumn - 1, currentRow + 1);
-    VectorNumberCorrectionFunction(currentColumn - 1, currentRow - 1);
-    VectorNumberCorrectionFunction(currentColumn + 1, currentRow);
-    VectorNumberCorrectionFunction(currentColumn + 1, currentRow + 1);
-    VectorNumberCorrectionFunction(currentColumn + 1, currentRow - 1);
+int CenterBombNumberCorrectionFunction(int currentRow, int currentColumn) {
+    VectorNumberCorrectionFunction(currentRow, currentColumn + 1);
+    VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
+    VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
+    VectorNumberCorrectionFunction(currentRow - 1, currentColumn + 1);
+    VectorNumberCorrectionFunction(currentRow - 1, currentColumn - 1);
+    VectorNumberCorrectionFunction(currentRow + 1, currentColumn);
+    VectorNumberCorrectionFunction(currentRow + 1, currentColumn + 1);
+    VectorNumberCorrectionFunction(currentRow + 1, currentColumn - 1);
     return 0;
     //Success
 }
 
 //The function that replaces empty or not fully analyzed location with the apropriate value
-int VectorNumberCorrectionFunction(int currentColumn, int currentRow) {
-    int currentPosition = ((currentColumn) * numberOfRows) + currentRow;
+int VectorNumberCorrectionFunction(int currentRow, int currentColumn) {
+    int currentPosition = ((currentRow) * numberOfColumns) + currentColumn;
     switch (primaryTableVector.at(currentPosition))
     {
     case ' ':
@@ -642,8 +625,8 @@ int VectorNumberCorrectionFunction(int currentColumn, int currentRow) {
 vector<int> emptySpaceLocations;
 vector<int> checkedEmptySpaceLocation;
 //The Function That reveals empty spaces
-int EmptySpaceRevealFunction(int currentColumn, int currentRow) {
-    int currentPosition = ((currentColumn)*numberOfRows) + currentRow;
+int EmptySpaceRevealFunction(int currentRow, int currentColumn) {
+    int currentPosition = ((currentRow)*numberOfColumns) + currentColumn;
     relativelocation relativePosision;
     bool notFinished = true;
     emptySpaceLocations.push_back(currentPosition);
@@ -661,49 +644,49 @@ int EmptySpaceRevealFunction(int currentColumn, int currentRow) {
             {
                 relativePosision = topleft;
             }
-            else if (currentPosition == numberOfRows - 1)
+            else if (currentPosition == numberOfColumns - 1)
             {
                 relativePosision = topright;
             }
-            else if ((numberOfRows * (numberOfColumns - 1)) == currentPosition)
+            else if ((numberOfColumns * (numberOfRows - 1)) == currentPosition)
             {
                 relativePosision = downleft;
             }
-            else if (((numberOfColumns * numberOfRows) - 1) == currentPosition)
+            else if (((numberOfRows * numberOfColumns) - 1) == currentPosition)
             {
                 relativePosision = downright;
             }
-            for (int i = 1; i < numberOfRows - 1; i++)
+            for (int i = 1; i < numberOfColumns - 1; i++)
             {
                 if (i == currentPosition)
                 {
                     relativePosision = top;
                     break;
                 }
-                if ((((numberOfColumns - 1) * numberOfRows) + i) == currentPosition)
+                if ((((numberOfRows - 1) * numberOfColumns) + i) == currentPosition)
                 {
                     relativePosision = bottom;
                     break;
                 }
             }
-            for (int i = 1; i < numberOfColumns - 1; i++)
+            for (int i = 1; i < numberOfRows - 1; i++)
             {
-                if ((i * numberOfRows) == currentPosition)
+                if ((i * numberOfColumns) == currentPosition)
                 {
                     relativePosision = leftside;
                     break;
                 }
-                if ((((i + 1) * numberOfRows) - 1) == currentPosition)
+                if ((((i + 1) * numberOfColumns) - 1) == currentPosition)
                 {
                     relativePosision = rightside;
                     break;
                 }
             }
-            for (int i = 1; i < numberOfColumns - 1; i++)
+            for (int i = 1; i < numberOfRows - 1; i++)
             {
-                for (int t = 1; t < numberOfRows - 1; t++)
+                for (int t = 1; t < numberOfColumns - 1; t++)
                 {
-                    if (((i * numberOfRows) + t) == currentPosition)
+                    if (((i * numberOfColumns) + t) == currentPosition)
                     {
                         relativePosision = center;
                     }
@@ -839,18 +822,18 @@ void RightSideCheck(int currentPosition) {
 }
 void UpSideCheck(int currentPosition) {
     //checks up
-    if (primaryTableVector.at(currentPosition - numberOfRows) == ' ')
+    if (primaryTableVector.at(currentPosition - numberOfColumns) == ' ')
     {
-        emptySpaceLocations.push_back(currentPosition - numberOfRows);
-        userTableVector.at(currentPosition - numberOfRows) = '-';
+        emptySpaceLocations.push_back(currentPosition - numberOfColumns);
+        userTableVector.at(currentPosition - numberOfColumns) = '-';
     }
 }
 void DownSideCheck(int currentPosition) {
     //checks down
-    if (primaryTableVector.at(currentPosition + numberOfRows) == ' ')
+    if (primaryTableVector.at(currentPosition + numberOfColumns) == ' ')
     {
-        emptySpaceLocations.push_back(currentPosition + numberOfRows);
-        userTableVector.at(currentPosition + numberOfRows) = '-';
+        emptySpaceLocations.push_back(currentPosition + numberOfColumns);
+        userTableVector.at(currentPosition + numberOfColumns) = '-';
     }
 }
 void EmptySpaceVectorUpdate(int currentPosition) {
