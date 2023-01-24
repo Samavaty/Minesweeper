@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="G:\Programming Projects\Minesweeper - Edited\Minesweeper\Minesweeper.cpp">
+    <ClCompile Include="Minesweeper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

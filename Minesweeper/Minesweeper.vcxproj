@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="G:\Programming Projects\Minesweeper - Edited\Minesweeper\Minesweeper.cpp" />
+    <ClCompile Include="Minesweeper.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

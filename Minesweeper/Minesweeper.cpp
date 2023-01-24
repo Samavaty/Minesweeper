@@ -52,7 +52,7 @@ int selectedRow;
 vector<char> primaryTableVector;
 vector<char> userTableVector;
 bool gameOver = false;
-long Score =0;
+long Score = 0;
 bool gameCompleted = false;
 string fullname;
 time_t startingTime;
@@ -61,7 +61,7 @@ time_t finishingTime;
 int main()
 {
     //The Begining Of The Game
-    TheBegining:
+TheBegining:
 
     //The Starting Page
     int selectedOption;
@@ -95,7 +95,7 @@ int main()
         goto TheBegining;
     }
 
-    GameStartingPage:
+GameStartingPage:
     // The Game Starting Page
 #pragma region GameStartingPage
 
@@ -106,19 +106,19 @@ int main()
         cout << "Number Of Columns : ";
         cin >> numberOfColumns;
 
-    } while (numberOfColumns<5 || numberOfColumns>19);
+    } while (numberOfColumns < 5 || numberOfColumns>19);
     // Gets The correct Number of Columns and Then Columns as well as Bombs
     do
     {
         cout << "Number Of Row : ";
         cin >> numberOfRows;
 
-    } while (numberOfRows<5 || numberOfRows>19);
+    } while (numberOfRows < 5 || numberOfRows>19);
 
     long gameAria = numberOfRows * numberOfColumns;
 
     // Exeption Handling For difficulty
-    GettingNumberOfBombs:
+GettingNumberOfBombs:
     try
     {
         do
@@ -135,7 +135,7 @@ int main()
     }
     switch (difficulty)
     {
-    case 1 :
+    case 1:
         numberOfAnticipatedBombs = gameAria / 20;
         break;
     case 2:
@@ -159,7 +159,7 @@ int main()
     //feeds the random number generator a key for it to generate new numbers
     srand((unsigned)time(NULL));
     //generates a location for bombs randomly in the vector
-    
+
     //Creating a vector to store all the random bombs location
     vector<int> randomBombLocationHolder;
     for (int i = 0; i < numberOfAnticipatedBombs; i++)
@@ -168,7 +168,7 @@ int main()
     }
     //The intresting thing is that the random numbers might be the same so the actual bombs might be fewer than anticipated
 
-    
+
     //Filling the primaryTableVector with ' ' place holders
     for (int i = 0; i < gameAria; i++)
     {
@@ -180,12 +180,12 @@ int main()
     {
         primaryTableVector.at(randomBombLocationHolder.at(l)) = 'b';
 
-    }  
+    }
     //This gives us the number of actual bombs in the game
     //As well as stores their new location in our BombLocationHolder
     for (int i = 0; i < gameAria; i++)
     {
-        if (primaryTableVector.at(i)=='b')
+        if (primaryTableVector.at(i) == 'b')
         {
             bombLocationHolder.push_back(i);
             numberOfActualBombs++;
@@ -306,28 +306,56 @@ int main()
     startingTime = GetCurrentTime();
     //selectedAction currentAction;
     char charCurrentAction;
-    while (gameOver == false && gameCompleted==false)
+    while (gameOver == false && gameCompleted == false)
     {
         system("cls");
         //Draws the primary vector for Testing purposes or if you want to win all the time
-        for (int j = 0; j < numberOfRows; j++)
-        {
-            cout << "\n\n";
-            for (int p = 0; p < numberOfColumns; p++)
-            {
-                cout << "|  " << primaryTableVector.at(j * numberOfColumns + p) << "  ";
-            }
-            cout << "|";
-        }
-        cout << "\n" << "The End of primary Vector" << "\n" << "The Begining of user Vector";
-        
+        //for (int j = 0; j < numberOfRows; j++)
+        //{
+        //    cout << "\n\n";
+        //    for (int p = 0; p < numberOfColumns; p++)
+        //    {
+        //        cout << "|  " << primaryTableVector.at(j * numberOfColumns + p) << "  ";
+        //    }
+        //    cout << "|";
+        //}
+        //cout << "\n" << "The End of primary Vector" << "\n" << "The Begining of user Vector";
+        string tempO;
+
         //Draws the user vector for a secound time
-        for (int j = 0; j < numberOfRows; j++)
+        for (int j = -1; j < numberOfRows; j++)
         {
             cout << "\n\n";
+            if (j < 9)
+            {
+                tempO = "0" + to_string(j + 1);
+            }
+            else
+            {
+
+                tempO = to_string(j + 1);
+            }
+            cout << tempO << "  ";
             for (int p = 0; p < numberOfColumns; p++)
             {
-                cout << "|  " << userTableVector.at(j * numberOfColumns + p) << "  ";
+                if (j == -1)
+                {
+                    if (p < 9)
+                    {
+                        cout << "|  " << p + 1 << "  ";
+
+                    }
+                    else
+                    {
+                        cout << "|  " << p + 1 << " ";
+
+                    }
+                }
+                else
+                {
+                    cout << "|  " << userTableVector.at(j * numberOfColumns + p) << "  ";
+
+                }
             }
             cout << "|";
         }
@@ -352,7 +380,7 @@ int main()
                 cout << "\n" << "Which Action Reveal or Flag (r OR f OR E for Exit) ? ";
                 cin >> charCurrentAction;
 
-            } while (charCurrentAction != 'f' && charCurrentAction != 'r' && charCurrentAction!='E');
+            } while (charCurrentAction != 'f' && charCurrentAction != 'r' && charCurrentAction != 'E');
             //when the user flags or reveals a flag
             if (charCurrentAction == 'r' && primaryTableVector
                 .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'b' &&
@@ -379,7 +407,7 @@ int main()
                 .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == 'b')
             {
                 userTableVector.at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) = 'F';
-                Score += 1000*difficulty;
+                Score += 1000 * difficulty;
             }
             //Whan the user REVEALs a Number
             else if (charCurrentAction == 'r' && primaryTableVector
@@ -399,7 +427,7 @@ int main()
             else if (charCurrentAction == 'f' && primaryTableVector
                 .at(((selectedRow - 1) * numberOfColumns) + (selectedColumn - 1)) == ' ')
             {
-                Score -= 100*difficulty;
+                Score -= 100 * difficulty;
                 cout << "\n\n\n\n\n\t\t\t\t\tYou've Flaged The Wrong Position";
                 Sleep(1500);
             }
@@ -413,7 +441,7 @@ int main()
                 Sleep(1500);
             }
             //when the user wants to exit to the main menu
-            else if (charCurrentAction=='E')
+            else if (charCurrentAction == 'E')
             {
                 system("cls");
                 Score = 0;
@@ -424,17 +452,17 @@ int main()
             }
             //check to see if the user has completed the game
             int tempX = 0;
-            if (gameOver==false)
+            if (gameOver == false)
             {
                 for (int i = 0; i < gameAria; i++)
                 {
-                    if (userTableVector.at(i)==' ')
+                    if (userTableVector.at(i) == ' ')
                     {
                         tempX++;
                     }
                 }
                 //this happens when the user wins the game
-                if (tempX==0)
+                if (tempX == 0)
                 {
                     finishingTime = GetCurrentTime();
                     gameCompleted = true;
@@ -442,7 +470,7 @@ int main()
                     cout << "\t\t\t\t\t\t You've Won!\n\n\n";
                     cout << "\t\t\tPlease Enter Your Name : ";
                     cin >> fullname;
-                    CheckForAHighScore(Score,fullname,startingTime,finishingTime);
+                    CheckForAHighScore(Score, fullname, startingTime, finishingTime);
                     Score = 0;
                     system("cls");
                     goto TheBegining;
@@ -456,16 +484,15 @@ int main()
             cout << "something went wrong!";
         }
 
-        if (gameOver==true)
+        if (gameOver == true)
         {
             finishingTime = GetCurrentTime();
             cout << "\t\t\t\tPlease Enter Your Name : ";
             cin >> fullname;
-            CheckForAHighScore(Score, fullname,startingTime,finishingTime);
+            CheckForAHighScore(Score, fullname, startingTime, finishingTime);
             gameOver = false;
             system("cls");
             Score = 0;
-            //Sleep(3000);
             goto TheBegining;
         }
 
@@ -477,9 +504,9 @@ int main()
 
 //Also need to add number of rows and test it again
 //The Function That recieves coordinance of bombs on the edge of the vector
-int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentRow,int currentColumn) {
+int EdgeBombNumberCorrectionFunction(relativelocation whichSide, int currentRow, int currentColumn) {
 
-    if (whichSide==topleft)
+    if (whichSide == topleft)
     {
         VectorNumberCorrectionFunction(1, 0);
         VectorNumberCorrectionFunction(0, 1);
@@ -487,7 +514,7 @@ int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentRow,i
         return 0;
         //Success
     }
-    else if (whichSide==topright)
+    else if (whichSide == topright)
     {
         VectorNumberCorrectionFunction(0, currentColumn - 1);
         VectorNumberCorrectionFunction(1, currentColumn);
@@ -495,7 +522,7 @@ int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentRow,i
         return 0;
         //Success
     }
-    else if (whichSide==downleft)
+    else if (whichSide == downleft)
     {
         VectorNumberCorrectionFunction(currentRow, 1);
         VectorNumberCorrectionFunction(currentRow - 1, 0);
@@ -503,7 +530,7 @@ int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentRow,i
         return 0;
         //Success
     }
-    else if (whichSide==downright)
+    else if (whichSide == downright)
     {
         VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
         VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
@@ -521,7 +548,7 @@ int EdgeBombNumberCorrectionFunction(relativelocation whichSide,int currentRow,i
 
 //The Function That recieves coordinance of bombs on the Bar Areas of the vector
 int BarBombsNumberCorrectionFunction(relativelocation whichside, int currentRow, int currentColumn) {
-    if (whichside==top)
+    if (whichside == top)
     {
         VectorNumberCorrectionFunction(currentRow, currentColumn + 1);
         VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
@@ -531,7 +558,7 @@ int BarBombsNumberCorrectionFunction(relativelocation whichside, int currentRow,
         return 0;
         //Success
     }
-    else if (whichside==bottom)
+    else if (whichside == bottom)
     {
         VectorNumberCorrectionFunction(currentRow, currentColumn + 1);
         VectorNumberCorrectionFunction(currentRow, currentColumn - 1);
@@ -541,7 +568,7 @@ int BarBombsNumberCorrectionFunction(relativelocation whichside, int currentRow,
         return 0;
         //Success
     }
-    else if (whichside==leftside)
+    else if (whichside == leftside)
     {
         VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
         VectorNumberCorrectionFunction(currentRow + 1, currentColumn);
@@ -551,7 +578,7 @@ int BarBombsNumberCorrectionFunction(relativelocation whichside, int currentRow,
         return 0;
         //Success
     }
-    else if (whichside==rightside)
+    else if (whichside == rightside)
     {
         VectorNumberCorrectionFunction(currentRow - 1, currentColumn);
         VectorNumberCorrectionFunction(currentRow + 1, currentColumn);
@@ -585,7 +612,7 @@ int CenterBombNumberCorrectionFunction(int currentRow, int currentColumn) {
 
 //The function that replaces empty or not fully analyzed location with the apropriate value
 int VectorNumberCorrectionFunction(int currentRow, int currentColumn) {
-    int currentPosition = ((currentRow) * numberOfColumns) + currentColumn;
+    int currentPosition = ((currentRow)*numberOfColumns) + currentColumn;
     switch (primaryTableVector.at(currentPosition))
     {
     case ' ':
@@ -895,7 +922,7 @@ int ShowHallOfFame() {
         cout << "\n\n\t\t     Fullname\t\t\t\tTimes\t\t\t\tScores";
         for (int i = 0; i < Names.size(); i++)
         {
-            cout << "\n\t\t" << Names.at(i) << "\t\t\t\t" << Times.at(i) 
+            cout << "\n\t\t" << Names.at(i) << "\t\t\t\t" << Times.at(i)
                 << "   seconds\t\t\t\t" << Scores.at(i);
         }
         cout << "\n\n\t\t To Exit Enter 1 : ";
@@ -920,13 +947,13 @@ int ShowHallOfFame() {
 
 }
 //This Function Check for a High Score
-void CheckForAHighScore(int score, string fullname,time_t startingTime,time_t finishingTime) {
+void CheckForAHighScore(int score, string fullname, time_t startingTime, time_t finishingTime) {
     //opening all the files in appending mode so as to not overwrite anything
     ofstream TimesFile("Time.txt", ios::app);
     ofstream NamesFile("Name.txt", ios::app);
     ofstream ScoresFile("Score.txt", ios::app);
     //Adding all the new results
-    TimesFile << ((finishingTime - startingTime)/1000) << "\n";
+    TimesFile << ((finishingTime - startingTime) / 1000) << "\n";
     NamesFile << fullname << "\n";
     ScoresFile << score << "\n";
     //Closing All the files
@@ -947,5 +974,5 @@ void ShowAboutTheCreator() {
     {
         cout << "\n\n\n\t\t\t\t Enter 1 to exit : ";
         cin >> tempI;
-    } while (tempI!=1);
+    } while (tempI != 1);
 }
